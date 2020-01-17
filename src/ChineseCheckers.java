@@ -69,8 +69,8 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		Picture button = new Picture(buttonSize, buttonSize);
 		button.setAllPixelsToAColor(col);
 		Graphics g = button.getGraphics();
-		g.setColor(Color.BLACK);
-		g.setFont(new Font("Arial", Font.BOLD, imgWidth / 16));
+		g.setColor(Color.YELLOW);
+		g.setFont(new Font("Calibri", Font.BOLD, imgWidth / 16));
 		g.drawString(player+"", (int)(buttonSize / 2.5), (int)(buttonSize / 1.5));
 		pic.copy(button, center+((player-1)/3)*(buttonSize+padding), leftPadding + ((player-1)%3)*(buttonSize+padding));
 		

@@ -289,14 +289,14 @@ public abstract class FlexiblePictureExplorer implements MouseMotionListener, Ac
     // add the items to the vertical box and the box to the panel
     hBox.add(Box.createHorizontalGlue());
     hBox.add(rowLabel);
-    hBox.add(rowPrevButton);
+    // hBox.add(rowPrevButton);
     hBox.add(rowValue);
-    hBox.add(rowNextButton);
+    // hBox.add(rowNextButton);
     hBox.add(Box.createHorizontalStrut(10));
     hBox.add(colLabel);
-    hBox.add(colPrevButton);
+    // hBox.add(colPrevButton);
     hBox.add(colValue);
-    hBox.add(colNextButton);
+    // hBox.add(colNextButton);
     locationPanel.add(hBox);
     hBox.add(Box.createHorizontalGlue());
     
