@@ -13,10 +13,15 @@ On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece a
   - White = human player
   - Blue = CPU player
   - Gray = not playing
+ For example, according to these settings, players 1 and 3 are humans, players 2 and 4 are CPUs, and players 5 and 6 are not playing.
+ ![Example player configuration](https://github.com/tytot/chinese-checkers/blob/master/titleexample.JPG)
 - Once you are done, click the "START" button to start the game.
 
 # How to Play
+If you were to use the player configuration as shown above, your initial board would look like this:
+ ![Initial board](https://github.com/tytot/chinese-checkers/blob/master/play1.JPG)
 - Click on a piece to see its possible moves
+ ![Possible moves shown](https://github.com/tytot/chinese-checkers/blob/master/play2.JPG)
 - Click on a highlighted hole to move a hole to that spot.
 - If your move is a hop, you have an option to continue your turn by moving your selected piece further along.
 - When you are done, click the gray arrow in the bottom right corner to end your turn.
@@ -24,4 +29,5 @@ On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece a
 - Yes, you can pit a CPU against another CPU. I pray you do not.
 
 Best,
+
 Tyler
