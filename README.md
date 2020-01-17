@@ -5,7 +5,7 @@ ChineseCheckers.java is the main runtime component. It holds an instance of Boar
 
 ChineseCheckers.java also holds instances of CCPlayer.java, each of which represent a player. CCPlayer.java is extended by ComputerCCPlayer.java, which represents a CPU. CCPlayer.java represents a human, so it only returns the hole that you pass it because selection and moving of pieces by a human in handled by the onMouseClicked function in ChineseCheckers.java. 
 
-On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece and movePiece functions with its own algorithm. ComputerCCPlayer.java aims to move all of its pieces to the tip of the opposite triangle. It picks one of its random pieces that has available moves and moves the piece to the closest available move to the tip of the opposite triangle. Thus, it takes time for the CPU to win, because it does not know what a winning move in. If you lose to a CPU in a one-on-one, you are pathetic.
+On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece and movePiece functions with its own algorithm. ComputerCCPlayer.java aims to move all of its pieces to the tip of the opposite triangle. It picks one of its random pieces that has available moves and moves the piece to the closest available move to the tip of the opposite triangle. Thus, it takes time for the CPU to win, because it does not know what a winning move is. If you lose to a CPU in a one-on-one, you are pathetic.
 
 # Title Screen
 - Start the game by running ChineseCheckers.java.
