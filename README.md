@@ -13,6 +13,7 @@ On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece a
   - White = human player
   - Blue = CPU player
   - Gray = not playing
+  
  For example, according to these settings, players 1 and 3 are humans, players 2 and 4 are CPUs, and players 5 and 6 are not playing.
  ![Example player configuration](https://github.com/tytot/chinese-checkers/blob/master/titleexample.JPG)
 - Once you are done, click the "START" button to start the game.
