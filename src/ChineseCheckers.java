@@ -15,11 +15,14 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 	private final Color boardCol = new Color(244,164,96);
 	private final Color bkgCol = Color.GRAY;
 	private final Color doneCol = Color.DARK_GRAY; // different than other colors
-	private final Color[] colors = {outlineCol, Color.RED, Color.BLUE, Color.YELLOW, new Color(50,205,50), Color.BLACK, Color.WHITE, highlight};
+	private static final Color GREEN = new Color(50,205,50);
+	private final Color[] colors = {outlineCol, Color.RED, Color.BLUE, Color.YELLOW, GREEN, Color.BLACK, Color.WHITE, highlight};
 	
 	private int numPlayers = 2;
-	private Color[] bColors = {Color.WHITE, Color.BLUE, Color.GRAY}; // white=player, blue=CPU, gray=not playing
-	private int[] bState = {0, 0, 2, 2, 2, 2};
+	private Color[] bColors = {GREEN, Color.BLUE, Color.GRAY}; // green=player, blue=CPU, gray=not playing
+	private static final int PLAYER = 0;
+	private static final int NONE = 2;
+	private int[] bState = {PLAYER, PLAYER, NONE, NONE, NONE, NONE};
 	private int turn = 1;
 	private boolean streak = false;
 	private Hole selectedHole;
@@ -50,16 +53,16 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 	}
 	
 	private void drawPButton(Picture pic, int player, Color col) {
-		if (col.equals(Color.GRAY)) {
+		if (col.equals(bColors[2])) {
 			bState[player-1] = 2;
 			if (player+1 <= 6)
-				drawPButton(pic, player+1, Color.GRAY);
-		} else if (col.equals(Color.WHITE)) {
+				drawPButton(pic, player+1, bColors[2]);
+		} else if (col.equals(bColors[0])) {
 			bState[player-1] = 0;
 			boolean done = false;
 			for (int i = player-1; i > 0 && !done; i--) {
 				if (bState[i-1] == 2) {
-					drawPButton(pic, i, Color.WHITE);
+					drawPButton(pic, i, bColors[0]);
 					done = true;
 				}
 			}
@@ -137,6 +140,16 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 			}
 		}
 		hole.setStatus(player);
+		
+		/*** debug mode ***/
+//		Picture num = new Picture((int)(holeRad * 2 / Math.sqrt(2)), (int)(holeRad * 2 / Math.sqrt(2)));
+//		num.setAllPixelsToAColor(colors[player]);
+//		Graphics g = num.getGraphics();
+//		g.setColor(Color.WHITE);
+//		g.setFont(new Font("Agency FB", Font.BOLD, 10));
+//		g.drawString(player + "", 2, 8);
+//		
+//		pic.copy(num, coords[1] - (int)(holeRad / Math.sqrt(2)), coords[0] - (int)(holeRad / Math.sqrt(2)));
 	}
 	
 	private double distance(int x1, int y1, int x2, int y2) {
@@ -204,6 +217,8 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 			nextButton(pic, false);
 			drawString(pic, "Player " + turn + "'s turn");
 		}
+		streak = false;
+		selectedHole = null;
 	}
 	
 	@Override
@@ -238,7 +253,7 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 			}
 		} else {
 			if (!gameOver) {
-				if (bState[turn - 1] == 0) { //if player 
+				if (bState[turn - 1] == PLAYER) { //if player 
 					int[] coords = Hole.toHex(pix, imgWidth);
 					if (theBoard.isHole(coords[0], coords[1])) {
 						Hole hole = theBoard.getHole(coords[0], coords[1]);
@@ -248,12 +263,12 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 									drawHole(adjHole, pic, 0);
 							}
 							selectedHole = players[turn - 1].selectPiece(hole, theBoard);
-							for (Hole adjHole : theBoard.getNextMoves(selectedHole, streak)) {
+							for (Hole adjHole : theBoard.getNextMoves(selectedHole, false)) {
 								drawHole(adjHole, pic, 7);
 								adjHole.setStatus(0);
 							}
 						} else if (pix.getColor().equals(colors[7])) {
-							Hole to = players[turn - 1].movePiece(hole, theBoard);
+							Hole to = players[turn - 1].movePiece(hole, theBoard, false);
 							drawHole(selectedHole, pic, to.getStatus());
 							for (Hole adjHole : theBoard.getNextMoves(selectedHole, false))
 								drawHole(adjHole, pic, 0);
@@ -267,9 +282,7 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 							}
 							if (selectedHole != null) {
 								selectedHole = players[turn - 1].selectPiece(hole, theBoard);
-								for (Hole adjHole : theBoard.getNextMoves(selectedHole, false))
-									drawHole(adjHole, pic, 0);
-								for (Hole adjHole : theBoard.getNextMoves(selectedHole, streak)) {
+								for (Hole adjHole : theBoard.getNextMoves(selectedHole, true)) {
 									drawHole(adjHole, pic, 7);
 									adjHole.setStatus(0);
 								}
@@ -278,19 +291,34 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 								nextTurn((Picture)pic);
 						}
 					} else if (pix.getColor().equals(doneCol)) {
-						for (Hole adjHole : theBoard.getNextMoves(selectedHole, false))
+						for (Hole adjHole : theBoard.getNextMoves(selectedHole, true))
 							drawHole(adjHole, pic, 0);
-						streak = false;
 						nextTurn((Picture)pic);
 					}
 				} else { //if CPU
-					selectedHole = players[turn - 1].selectPiece(null, theBoard);
+					if (selectedHole == null)
+						selectedHole = players[turn - 1].selectPiece(null, theBoard);
 					drawHole(selectedHole, pic, 0);
-					//System.out.println("CPU player " + (turn) + " selected " + selectedHole.x() + "," + selectedHole.y());
-					Hole dest = players[turn - 1].movePiece(selectedHole, theBoard);
-					drawHole(dest, pic, turn);
-					if (!streak)
-						nextTurn((Picture)pic);
+					Hole dest = players[turn - 1].movePiece(selectedHole, theBoard, streak);
+					if (dest == null) {
+						if (streak) {
+							drawHole(selectedHole, pic, turn);
+							nextTurn((Picture)pic);
+						} else {
+							do {
+								dest = players[turn - 1].movePiece(selectedHole, theBoard, false);
+							} while (dest == null);
+						}
+					}
+					if (dest != null) {
+						drawHole(dest, pic, turn);
+						if (Math.abs(selectedHole.x() - dest.x()) > 1 || Math.abs(selectedHole.y() - dest.y()) > 1) {
+							streak = true;
+							selectedHole = dest;
+						} else {
+							nextTurn((Picture)pic);
+						}
+					}
 				}
 			}
 		}

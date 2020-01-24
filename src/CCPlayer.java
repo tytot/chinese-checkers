@@ -8,5 +8,5 @@ public class CCPlayer {
 	}
 	
 	public Hole selectPiece(Hole from, Board theBoard) {return from;}
-	public Hole movePiece(Hole to, Board theBoard) {return to;}
+	public Hole movePiece(Hole to, Board theBoard, boolean hopsOnly) {return to;}
 }

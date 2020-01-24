@@ -27,8 +27,8 @@ public class ComputerCCPlayer extends CCPlayer {
 		
 		return output;
 	}
-	public Hole movePiece(Hole to, Board theBoard) {
-		ArrayList<Hole> nextMoves = theBoard.getNextMoves(to, false);
+	public Hole movePiece(Hole to, Board theBoard, boolean hopsOnly) {
+		ArrayList<Hole> nextMoves = theBoard.getNextMoves(to, hopsOnly);
 		//System.out.println("next moves for " + to.x() + "," + to.y());
 //		for (Hole nextMove : nextMoves) {
 //			System.out.println(nextMove.x() + "," + nextMove.y());
@@ -40,7 +40,7 @@ public class ComputerCCPlayer extends CCPlayer {
 		else
 			goal = pVal - 1;
 		Hole goalHole = destHoles[goal - 1];
-		double least = Double.MAX_VALUE;
+		double least = dist(to, goalHole);
 		Hole output = null;
 		for (Hole move : nextMoves) {
 			double dist = dist(move, goalHole);
