@@ -10,7 +10,7 @@ On the other hand, ComputerCCPlayer.java overrides CCPlayer.java's selectPiece a
 # Title Screen
 - Start the game by running ChineseCheckers.java.
 - Use the graphical player selection user interface to select the number of player and which players are CPUs.
-  - White = human player
+  - Green = human player
   - Blue = CPU player
   - Gray = not playing
   
