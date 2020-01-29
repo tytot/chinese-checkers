@@ -3,11 +3,7 @@ import java.awt.image.ImageObserver;
 
 public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObserver {
 	public static int imgWidth;
-	private int holeRad;
-	private int buttonSize;
-	private int padding;
-	private int leftPadding;
-	private int center;
+	private int holeRad, buttonSize, padding, leftPadding, center;
 	private Board theBoard;
 	
 	private final Color highlight = new Color(104,64,30);
@@ -20,14 +16,11 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 	
 	private int numPlayers = 2;
 	private Color[] bColors = {GREEN, Color.BLUE, Color.GRAY}; // green=player, blue=CPU, gray=not playing
-	private static final int PLAYER = 0;
-	private static final int NONE = 2;
+	private static final int PLAYER = 0, NONE = 2;
 	private int[] bState = {PLAYER, PLAYER, NONE, NONE, NONE, NONE};
 	private int turn = 1;
-	private boolean streak = false;
+	private boolean streak = false, gameStarted = false, gameOver = false;
 	private Hole selectedHole;
-	private boolean gameStarted = false;
-	private boolean gameOver = false;
 	private CCPlayer[] players;
 	
 	public ChineseCheckers(int size) {
@@ -44,6 +37,10 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		drawStartScreen();
 	}
 	
+	public static void main(String[] args) {
+		new ChineseCheckers(640);
+	}
+	
 	private void drawStartScreen() {
 		Picture start = new Picture("images/CCtitlescreen.jpg").scale(imgWidth / 640.0, imgWidth / 640.0);
 		for (int i = 0; i < 6; i++)
@@ -53,10 +50,12 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 	}
 	
 	private void drawPButton(Picture pic, int player, Color col) {
+		String label;
 		if (col.equals(bColors[2])) {
 			bState[player-1] = 2;
 			if (player+1 <= 6)
 				drawPButton(pic, player+1, bColors[2]);
+			label = "-----";
 		} else if (col.equals(bColors[0])) {
 			bState[player-1] = 0;
 			boolean done = false;
@@ -66,15 +65,24 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 					done = true;
 				}
 			}
-		} else
+			label = "PLAYER";
+		} else {
 			bState[player-1] = 1;
+			label = "CPU";
+		}
 		
 		Picture button = new Picture(buttonSize, buttonSize);
 		button.setAllPixelsToAColor(col);
 		Graphics g = button.getGraphics();
 		g.setColor(Color.YELLOW);
 		g.setFont(new Font("Calibri", Font.BOLD, imgWidth / 16));
-		g.drawString(player+"", (int)(buttonSize / 2.5), (int)(buttonSize / 1.5));
+		g.drawString(player+"", (int)(buttonSize / 2.5), buttonSize * 3 / 4);
+		g.setFont(new Font("Calibri", Font.ITALIC, imgWidth / 32));
+		if (label.equals("PLAYER"))
+			g.drawString(label, buttonSize / 8, buttonSize / 4);
+		else
+			g.drawString(label, buttonSize / 3, buttonSize / 4);
+		
 		pic.copy(button, center+((player-1)/3)*(buttonSize+padding), leftPadding + ((player-1)%3)*(buttonSize+padding));
 		
 		int players = 0;
@@ -85,7 +93,8 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		numPlayers = players;
 	}
 	
-	private void drawBoard() {
+	private void startGame() {
+		gameStarted = true;
 		players = new CCPlayer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			if (bState[i] == 0)
@@ -93,7 +102,10 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 			else
 				players[i] = new ComputerCCPlayer(i+1);
 		}
-		
+		drawBoard();
+	}
+	
+	private void drawBoard() {
 		Picture disp = new Picture(imgWidth, imgWidth);
 		Pixel[][] pixels = disp.getPixels2D();
 		double boardRadius = 0.875 * center;
@@ -197,7 +209,7 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		for (int x = start; x <= start + width; x++) {
 			for (int y = start - width; y <= start + width; y++) {
 				if (draw) {
-					if (Math.abs(y - start) < 0.6 * ((start + width) - x))
+					if (Math.abs(y - start) < (1 / Math.sqrt(3)) * ((start + width) - x))
 						pixels[y][x].setColor(doneCol);
 				} else
 					pixels[y][x].setColor(bkgCol);
@@ -226,8 +238,7 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		Picture pic = (Picture)pict;
 		if (!gameStarted) {
 			if (pix.getRow() > (0.825 * imgWidth)) {
-				drawBoard();
-				gameStarted = true;
+				startGame();
 			} else {
 				int col = pix.getCol();
 				int row = pix.getRow();
@@ -324,9 +335,6 @@ public class ChineseCheckers extends FlexiblePictureExplorer implements ImageObs
 		}
 	}
 
-	public static void main(String[] args) {
-		new ChineseCheckers(640);
-	}
 	@Override
 	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 		// TODO Auto-generated method stub
