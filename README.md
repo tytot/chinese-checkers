@@ -28,7 +28,3 @@ If you were to use the player configuration as shown above, your initial board w
 - When you are done, click the gray arrow in the bottom right corner to end your turn.
 - To advance a CPUs turn, simply click anywhere on the screen.
 - Yes, you can pit a CPU against another CPU. I pray you do not.
-
-Best,
-
-Tyler
